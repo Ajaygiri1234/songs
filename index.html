@@ -20,6 +20,15 @@
         .song-list li.playing {
             background-color: #48e67c;
         }
+        .song-list li.playing .playing-indicator::before {
+            content: "\25B6"; /* Unicode for play symbol */
+            margin-right: 5px;
+        }
+        .playing-indicator {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+        }
         .form-container {
             margin-bottom: 20px;
         }
@@ -60,19 +69,30 @@
         var songElements = [];
 
         function playSong(song, index) {
-            var audioPlayer = document.getElementById('audio-player');
-            audioPlayer.src = song; // Adjust the song filename pattern as needed
-            audioPlayer.play();
+        var audioPlayer = document.getElementById('audio-player');
+        audioPlayer.src = song; // Adjust the song filename pattern as needed
+        audioPlayer.play();
 
-            // Remove the 'playing' class from the previously selected song
-            if (currentSongIndex !== null) {
-                songElements[currentSongIndex].classList.remove('playing');
+        // Remove the 'playing' class and indicator from the previously selected song
+        if (currentSongIndex !== null && songElements[currentSongIndex]) {
+            songElements[currentSongIndex].classList.remove('playing');
+            var indicator = songElements[currentSongIndex].querySelector('.playing-indicator');
+            if (indicator) {
+                indicator.innerHTML = '';
             }
-
-            // Add the 'playing' class to the currently selected song
-            songElements[index].classList.add('playing');
-            currentSongIndex = index;
         }
+
+    // Add the 'playing' class and indicator to the currently selected song
+    if (songElements[index]) {
+        songElements[index].classList.add('playing');
+        var indicator = songElements[index].querySelector('.playing-indicator');
+        if (indicator) {
+            indicator.innerHTML = '\u25B6'; // Play symbol
+        }
+        currentSongIndex = index;
+    }
+}
+
 
         function playNextSong() {
             var nextIndex = (currentSongIndex + 1) % songElements.length;
@@ -109,7 +129,7 @@
             const repoInput = document.getElementById('repoInput').value.trim() || 'songs';
 
             const listOfSongs = await fetchAndStoreFiles(ownerInput, repoInput, '');
-            console.log(ownerInput,repoInput)
+            console.log(ownerInput, repoInput);
 
             if (listOfSongs) {
                 console.log('MP3 and MP4 Files:', listOfSongs);
@@ -119,7 +139,10 @@
                 // Loop through the listOfSongs and create LI elements dynamically
                 listOfSongs.forEach((song, index) => {
                     const li = document.createElement('li');
-                    li.textContent = song;
+                    const indicator = document.createElement('span');
+                    indicator.classList.add('playing-indicator');
+                    li.appendChild(indicator);
+                    li.textContent = song.split('/').pop();
                     li.setAttribute('onclick', `playSong('${song}',${index})`);
                     songList.appendChild(li);
                     songElements.push(li);
