@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <style>
+        /* Basic styles for the player */
+        #music-player {
+            margin: 20px;
+        }
+        .song-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .song-list li {
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+        .song-list li.playing {
+            background-color: #48e67c;
+        }
+        .song-list li.playing .playing-indicator::before {
+            content: "\25B6"; /* Unicode for play symbol */
+            margin-right: 5px;
+        }
+        .playing-indicator {
+            display: inline-block;
+            width: 20px;
+            text-align: center;
+        }
+        .form-container {
+            margin-bottom: 20px;
+        }
+        .form-container label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-container input {
+            width: 100%;
+            padding: 5px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <label for="ownerInput">Owner:</label>
+        <input type="text" id="ownerInput" placeholder="Enter owner" value="ajaygiri1234">
+
+        <label for="repoInput">Repo:</label>
+        <input type="text" id="repoInput" placeholder="Enter repo" value="songs">
+
+        <button onclick="fetchAndRedirect()">Fetch Songs</button>
+    </div>
+
+    <div id="music-player">
+        <h2>Music Player</h2>
+       
+        <ul id="songList" class="song-list"></ul>
+        <audio id="audio-player" controls onended="playNextSong()">
+            Your browser does not support the audio element.
+        </audio>
+    </div>
+
+    <script>
+       
+        function fetchAndRedirect() {
+            const ownerInput = document.getElementById('ownerInput').value.trim() || 'ajaygiri1234';
+            const repoInput = document.getElementById('repoInput').value.trim() || 'songs';
+
+            const redirectUrl = `index.html?owner=${ownerInput}&repo=${repoInput}`;
+            window.location.href = redirectUrl;
+        }
+
+   
+        // Initial function call when the page loads
+
+    </script>
+</body>
+</html>
