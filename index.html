@@ -90,14 +90,14 @@
                 
                 const data = await response.json();
                 
-                const mp3mp4Files = data
+                const songFiles = data
                     .filter(item => {
                         const fileName = item.name.toLowerCase();
                         return fileName.endsWith('.mp3') || fileName.endsWith('.mp4');
                     })
-                    .map(item => item.path);
+                    .map(item => `https://${owner}.github.io/${repo}/${item.name}`);
                     
-                return mp3mp4Files;
+                return songFiles;
             } catch (error) {
                 console.error('Error:', error);
                 return null; // or handle the error as needed
@@ -109,6 +109,7 @@
             const repoInput = document.getElementById('repoInput').value.trim() || 'songs';
 
             const listOfSongs = await fetchAndStoreFiles(ownerInput, repoInput, '');
+            console.log(ownerInput,repoInput)
 
             if (listOfSongs) {
                 console.log('MP3 and MP4 Files:', listOfSongs);
