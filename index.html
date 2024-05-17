@@ -52,7 +52,7 @@
         <label for="repoInput">Repo:</label>
         <input type="text" id="repoInput" placeholder="Enter repo" value="songs">
 
-        <button onclick="fetchAndDisplaySongs()">Fetch Songs</button>
+        <button onclick="fetchAndRedirect()">Fetch Songs</button>
     </div>
 
     <div id="music-player">
@@ -69,30 +69,30 @@
         var songElements = [];
 
         function playSong(song, index) {
-        var audioPlayer = document.getElementById('audio-player');
-        audioPlayer.src = song; // Adjust the song filename pattern as needed
-        audioPlayer.play();
+            var audioPlayer = document.getElementById('audio-player');
+            audioPlayer.src = song; // Adjust the song filename pattern as needed
+            audioPlayer.play();
 
-        // Remove the 'playing' class and indicator from the previously selected song
-        if (currentSongIndex !== null && songElements[currentSongIndex]) {
-            songElements[currentSongIndex].classList.remove('playing');
-            var indicator = songElements[currentSongIndex].querySelector('.playing-indicator');
-            if (indicator) {
-                indicator.innerHTML = '';
+            // Remove the 'playing' class and indicator from the previously selected song
+            if (currentSongIndex !== null && songElements[currentSongIndex]) {
+                songElements[currentSongIndex].classList.remove('playing');
+                var indicator = songElements[currentSongIndex].querySelector('.playing-indicator');
+                if (indicator) {
+                    indicator.innerHTML = '';
+                }
+            }
+
+            // Add the 'playing' class and indicator to the currently selected song
+            if (songElements[index]) {
+                songElements[index].classList.add('playing');
+                var indicator = songElements[index].querySelector('.playing-indicator');
+                if (indicator) {
+                    indicator.innerHTML = '\u25B6'; // Play symbol
+                }
+                
+                currentSongIndex = index;
             }
         }
-
-    // Add the 'playing' class and indicator to the currently selected song
-    if (songElements[index]) {
-        songElements[index].classList.add('playing');
-        var indicator = songElements[index].querySelector('.playing-indicator');
-        if (indicator) {
-            indicator.innerHTML = '\u25B6'; // Play symbol
-        }
-        currentSongIndex = index;
-    }
-}
-
 
         function playNextSong() {
             var nextIndex = (currentSongIndex + 1) % songElements.length;
@@ -151,6 +151,32 @@
                 console.error('Failed to fetch songs.');
             }
         }
+
+        function fetchAndRedirect() {
+            const ownerInput = document.getElementById('ownerInput').value.trim() || 'ajaygiri1234';
+            const repoInput = document.getElementById('repoInput').value.trim() || 'songs';
+
+            const redirectUrl = `index.html?owner=${ownerInput}&repo=${repoInput}`;
+            window.location.href = redirectUrl;
+        }
+
+        // Function to parse URL parameters
+        function getUrlParams() {
+            const searchParams = new URLSearchParams(window.location.search);
+            const owner = searchParams.get('owner');
+            const repo = searchParams.get('repo');
+            return { owner, repo };
+        }
+
+        // Initial function call when the page loads
+        window.onload = function () {
+            const { owner, repo } = getUrlParams();
+            if (owner && repo) {
+                document.getElementById('ownerInput').value = owner;
+                document.getElementById('repoInput').value = repo;
+                fetchAndDisplaySongs();
+            }
+        };
     </script>
 </body>
 </html>
